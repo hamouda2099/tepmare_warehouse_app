@@ -88,14 +88,6 @@ class SitesPagination extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.people,
-            size: 70,
-            color: Colors.grey,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
           Text(
             'No Data'.tr(),
             style: const TextStyle(

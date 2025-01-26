@@ -14,12 +14,13 @@ void showShipmentsItem(BuildContext context,
       builder: (context) {
         return Container(
           padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(15),
-                topLeft: Radius.circular(15),
-              )),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(15),
+              topLeft: Radius.circular(15),
+            ),
+          ),
           child: Consumer(
             builder: (context, ref, child) {
               ref.watch(childrenReBuilder);

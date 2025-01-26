@@ -16,7 +16,7 @@ class Locations extends ConsumerWidget {
 
   TextEditingController searchCnt = TextEditingController();
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       bottomNavigationBar: BottomBar(),
@@ -25,21 +25,23 @@ class Locations extends ConsumerWidget {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
-              SecondaryAppBar("Locations".tr(),onTapIcon: (){
+              SecondaryAppBar(
+                "Locations".tr(),
+                onTapIcon: () {
                   navigator(
                     context: context,
                     screen: CreateLocation(),
                   );
-                },),
+                },
+              ),
               20.h,
               Container(
                 decoration: BoxDecoration(
                     color: kGreyColor.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(15)
-                ),
+                    borderRadius: BorderRadius.circular(15)),
                 child: SearchTextField(
                   controller: searchCnt,
-                  onChanged: (val){
+                  onChanged: (val) {
                     ref.read(refreshProvider.notifier).state =
                         DateTime.now().toString();
                   },

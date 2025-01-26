@@ -199,7 +199,9 @@ class ExitShipment extends ConsumerWidget {
                                       hintStyle: const TextStyle(fontSize: 14)),
                                 )),
                             InkWell(
-                                onTap: () async {},
+                                onTap: () async {
+                                  logic.scanItem();
+                                },
                                 child: const Icon(
                                   Icons.document_scanner_outlined,
                                   color: kPrimaryColor,

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
+import 'package:tepmare_warehouse_man_app/dialogs/basic_dialogs.dart';
 import 'package:tepmare_warehouse_man_app/logic/uiLogic/exit_shipment_logic.dart';
 import 'package:tepmare_warehouse_man_app/models/stock_model.dart';
 
@@ -124,12 +125,50 @@ class ExitShipmentClientItemsPagination extends ConsumerWidget {
                                       fetchedData[index].qty?.toString() ?? "0",
                                   itemName: fetchedData[index].designation)
                               .then((value) {
-                            ExitShipmentLogic.children.add({
-                              "itemId": fetchedData[index].itemId,
-                              "qty": value,
-                              "designation": fetchedData[index].designation,
-                              "locationId": fetchedData[index].locationId,
-                            });
+                            bool found = false;
+                            num currentQty = 0;
+                            for (int i = 0;
+                                i < ExitShipmentLogic.children.length;
+                                i++) {
+                              if (ExitShipmentLogic.children[i]['itemId']
+                                      .toString() ==
+                                  fetchedData[index].id.toString()) {
+                                currentQty +=
+                                    ExitShipmentLogic.children[i]['qty'];
+                              }
+                            }
+                            if (currentQty + value >
+                                (fetchedData[index].qty ?? 0)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content: Text(
+                                      "${"Cannot exceed available stock of".tr()} ${fetchedData[index].qty}."),
+                                ),
+                              );
+                              return;
+                            }
+                            for (int i = 0;
+                                i < ExitShipmentLogic.children.length;
+                                i++) {
+                              if (ExitShipmentLogic.children[i]['itemId']
+                                      .toString() ==
+                                  fetchedData[index].id.toString()) {
+                                ExitShipmentLogic.children[i]['qty'] =
+                                    ExitShipmentLogic.children[i]['qty'] +
+                                        value;
+                                found = true;
+                                break;
+                              }
+                            }
+                            if (!found) {
+                              ExitShipmentLogic.children.add({
+                                "itemId": fetchedData[index].id,
+                                "qty": value,
+                                "designation": fetchedData[index].designation,
+                                "locationId": fetchedData[index].locationId,
+                              });
+                            }
                           });
                         },
                         child: Container(

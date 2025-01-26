@@ -55,28 +55,31 @@ class CategoriesDialogPagination extends ConsumerWidget {
                                   itemCount:
                                       snapshot.data!.categories?.length ?? 0,
                                   itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        CategoriesListDialog.selectedCategory =
-                                            snapshot.data?.categories?[index];
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        width: screenWidth / 2,
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              kSecondaryColor.withOpacity(0.05),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          snapshot.data?.categories?[index]
-                                                  .label ??
-                                              "",
-                                          style: const TextStyle(
-                                            color: kPrimaryColor,
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          CategoriesListDialog.selectedCategory =
+                                              snapshot.data?.categories?[index];
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          width: screenWidth / 2,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                kSecondaryColor.withOpacity(0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            snapshot.data?.categories?[index]
+                                                    .label ??
+                                                "",
+                                            style: const TextStyle(
+                                              color: kPrimaryColor,
+                                            ),
                                           ),
                                         ),
                                       ),

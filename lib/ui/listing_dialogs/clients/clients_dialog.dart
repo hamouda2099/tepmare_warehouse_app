@@ -43,7 +43,7 @@ class ClientsListDialog {
                       children: [
                         Text(
                           "Select Client".tr(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

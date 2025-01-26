@@ -13,11 +13,10 @@ import '../../logic/uiLogic/entry_shipment_logic.dart';
 /// To use this custom pagination list you have to change that function and returned widget.
 class EntryShipmentClientItemsPagination extends ConsumerWidget {
   EntryShipmentClientItemsPagination(
-      {super.key,
-        required this.query,
-        required this.clientId});
+      {super.key, required this.query, required this.clientId});
   String query;
-  String clientId;  ScrollController scrollController = ScrollController();
+  String clientId;
+  ScrollController scrollController = ScrollController();
   int limit = 10;
   int page = 1;
   bool isLastPage = false;
@@ -42,11 +41,10 @@ class EntryShipmentClientItemsPagination extends ConsumerWidget {
 
         /// (1) change this function.
         ItemsModel itemsModel = await ApiManager.getItems(
-          page: page.toString(),
-          limit: limit.toString(),
+            page: page.toString(),
+            limit: limit.toString(),
             query: query,
-            clientId: clientId
-        );
+            clientId: clientId);
         List<Item>? tempFetchedData = itemsModel.items;
         if (tempFetchedData?.isEmpty ?? true) {
           isLastPage = true;
@@ -68,10 +66,10 @@ class EntryShipmentClientItemsPagination extends ConsumerWidget {
     if (!initState) {
       initState = true;
       WidgetsBinding.instance.addPostFrameCallback(
-            (timeStamp) {
+        (timeStamp) {
           getData(widgetRef);
           scrollController.addListener(
-                () {
+            () {
               if (scrollController.position.atEdge &&
                   scrollController.position.pixels != 0) {
                 getData(widgetRef);
@@ -85,67 +83,81 @@ class EntryShipmentClientItemsPagination extends ConsumerWidget {
     final centerLoading = widgetRef.watch(centerLoadingProvider);
     final bottomLoading = widgetRef.watch(bottomLoadingProvider);
     return centerLoading
-        ? Center(child: CircularProgressIndicator(color: kPrimaryColor,),)
-
-        : fetchedData.isEmpty
-        ? Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.people,
-            size: 70,
-            color: Colors.grey,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            'No Data'.tr(),
-            style: const TextStyle(
-              color: Colors.grey,
+        ? const Center(
+            child: CircularProgressIndicator(
+              color: kPrimaryColor,
             ),
-          ),
-        ],
-      ),
-    )
-        : ListView.builder(
-      itemCount: fetchedData.length,
-      controller: scrollController,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return Column(
-          children: [
-            /// (2) change custom component for list view
-            InkWell(
-              onTap: () {
+          )
+        : fetchedData.isEmpty
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.people,
+                      size: 70,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'No Data'.tr(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : ListView.builder(
+                itemCount: fetchedData.length,
+                controller: scrollController,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      /// (2) change custom component for list view
+                      InkWell(
+                        onTap: () {
                           enterQty(context,
                                   itemName: fetchedData[index].designation)
                               .then((value) {
-                            EntryShipmentLogic.children.add({
-                              "itemId": fetchedData[index].id,
-                              "qty": value,
-                              "designation": fetchedData[index].designation,
-                  });
-                });
-              },
-              child: Container(
-                height: 45,
+                            bool found = false;
+                            for (int i = 0; i < EntryShipmentLogic.children.length; i++) {
+                              if (EntryShipmentLogic.children[i]['itemId'].toString() ==
+                                  fetchedData[index].id.toString()) {
+                                EntryShipmentLogic.children[i]['qty'] =
+                                    EntryShipmentLogic.children[i]['qty'] + value;
+                                found = true;
+                                break;
+                              }
+                            }
+                            if (!found) {
+                              EntryShipmentLogic.children.add({
+                                "itemId": fetchedData[index].id,
+                                "qty": value,
+                                "designation": fetchedData[index].designation,
+                              });
+                            }
+                          });
+                        },
+                        child: Container(
+                          height: 45,
                           margin: const EdgeInsets.all(5),
                           width: screenWidth,
                           padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.2),
-                  borderRadius:
-                  BorderRadius.circular(10),
-                ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(fetchedData[index].designation ?? ""),
                               Text(
                                 "Stock: ${fetchedData[index].stock ?? ""}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: kPrimaryColor,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -153,25 +165,25 @@ class EntryShipmentClientItemsPagination extends ConsumerWidget {
                           ),
                         ),
                       ),
-            index == fetchedData.length - 1 && bottomLoading
-                ? Center(
-              child: Container(
-                width: 20,
-                height: 20,
-                margin: const EdgeInsets.only(bottom: 10),
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    color: kPrimaryColor,
-                  ),
-                ),
-              ),
-            )
-                : const SizedBox(),
-          ],
-        );
-      },
-    );
+                      index == fetchedData.length - 1 && bottomLoading
+                          ? Center(
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3,
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ],
+                  );
+                },
+              );
   }
 }
 
@@ -205,7 +217,7 @@ Future<num> enterQty(BuildContext context, {String? itemName}) async {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.close,
                           color: Colors.red,
                         ))
@@ -241,18 +253,20 @@ Future<num> enterQty(BuildContext context, {String? itemName}) async {
                 10.h,
                 InkWell(
                   onTap: () {
-                    Navigator.pop(context);
+                    if (formKey.currentState!.validate()) {
+                      Navigator.pop(context);
+                    }
                   },
                   child: Container(
                     width: double.infinity,
-                    padding: EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
                         color: Colors.green,
                         borderRadius: BorderRadius.circular(5)),
                     alignment: Alignment.center,
                     child: Text(
                       "Add to List".tr(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,

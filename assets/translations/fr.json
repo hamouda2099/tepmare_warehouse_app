@@ -73,5 +73,21 @@
   "Change Language": "Changer de langue",
   "English": "English",
   "French": "French",
-  "QTY: ": "QTY: "
+  "Add to List": "Ajouter à la liste",
+  "QTY: ": "Qté: ",
+  "Enter QTY From": "Entrez la quantité à partir de",
+  "Enter Quantity": "Entrer la quantité",
+  "user not found": "utilisateur introuvable",
+  "incorrect password": "mot de passe incorrect",
+  "label is required": "l'étiquette est obligatoire",
+  "category deleted successfully": "catégorie supprimée avec succès",
+  "category updated successfully": "catégorie mise à jour avec succès",
+  "firstName, username, email, phoneNumber, password, email, companyName, address, postalCode, tva, siren, type are required": "prénom, nom d'utilisateur, email, numéro de téléphone, mot de passe, email, nom de l'entreprise, adresse, code postal, tva, sirène, type sont requis",
+  "client deleted successfully": "Client supprimé avec succès",
+  "client not found": "Client introuvable",
+  "client updated successfully": "Client mis à jour avec succès",
+  "stock tranferd successfully": "transfert de stock réussi",
+  "Item Not Found": "Article introuvable",
+  "Failed to get platform version.": "Impossible d'obtenir la version de la plateforme.",
+  "Cannot exceed available stock of": "Ne peut pas dépasser le stock disponible de"
 }

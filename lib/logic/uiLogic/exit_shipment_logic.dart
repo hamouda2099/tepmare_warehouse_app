@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,38 +32,70 @@ class ExitShipmentLogic {
     String barcodeScanRes;
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
+          '#2196F3', 'Cancel', true, ScanMode.BARCODE);
       ApiManager.getStockByBarcode(barcode: barcodeScanRes).then((item) {
         if (item['statusCode'] == 200) {
           enterQty(context,
-                  qty: item['item']['qty'].toString(),
+                  qty: item['item']['qty'].toString() ?? "0",
                   itemName: item['item']['designation'])
               .then((value) {
-            ExitShipmentLogic.children.add({
-              "itemId": item['item']['item_id'],
-              "qty": value,
-              "designation": item['item']['designation'],
-              "locationId": item['item']['locationId']
-            });
+            bool found = false;
+            num currentQty = 0;
+            for (int i = 0; i < ExitShipmentLogic.children.length; i++) {
+              if (ExitShipmentLogic.children[i]['itemId'].toString() ==
+                  item['item']['item_id'].toString()) {
+                currentQty += ExitShipmentLogic.children[i]['qty'];
+              }
+            }
+            if (currentQty + value > (item['item']['qty'] ?? 0)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.redAccent,
+                  content: Text(
+                      "${"Cannot exceed available stock of".tr()} ${item['item']['qty']}."),
+                ),
+              );
+              return;
+            }
+            for (int i = 0; i < ExitShipmentLogic.children.length; i++) {
+              if (ExitShipmentLogic.children[i]['itemId'].toString() ==
+                  item['item']['item_id'].toString()) {
+                ExitShipmentLogic.children[i]['qty'] =
+                    ExitShipmentLogic.children[i]['qty'] + value;
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              ExitShipmentLogic.children.add({
+                "itemId": item['item']['item_id'],
+                "qty": value,
+                "designation": item['item']['designation'],
+                "locationId": item['item']['locationId'],
+              });
+            }
           });
         } else {
-          Dialogs().messageDialog(context, "Item Not Found".tr());
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.redAccent,
+              content: Text("Item Not Found".tr()),
+            ),
+          );
         }
       });
     } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
+      barcodeScanRes = 'Failed to get platform version.'.tr();
     }
   }
 
   void create() {
     if (children.isEmpty) {
-      return Dialogs().messageDialog(context, "at least add one item");
+      return Dialogs().messageDialog(context, "at least add one item".tr());
     }
-
     if (ref.read(clientProvider.notifier).state == null) {
-      return Dialogs().messageDialog(context, "Please choose  client");
+      return Dialogs().messageDialog(context, "Please choose  client".tr());
     }
-
     Dialogs().loadingDialog(context);
     ApiManager.createExitShipment(
             clientId:

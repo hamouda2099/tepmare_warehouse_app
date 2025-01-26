@@ -16,7 +16,7 @@ class Categories extends ConsumerWidget {
 
   TextEditingController searchCnt = TextEditingController();
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       bottomNavigationBar: BottomBar(),
@@ -25,18 +25,20 @@ class Categories extends ConsumerWidget {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
-              SecondaryAppBar("Categories".tr(),onTapIcon: (){
-                navigator(context: context, screen: CreateCategory());
-              },),
+              SecondaryAppBar(
+                "Categories".tr(),
+                onTapIcon: () {
+                  navigator(context: context, screen: CreateCategory());
+                },
+              ),
               20.h,
               Container(
                 decoration: BoxDecoration(
                     color: kGreyColor.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(15)
-                ),
+                    borderRadius: BorderRadius.circular(15)),
                 child: SearchTextField(
                   controller: searchCnt,
-                  onChanged: (val){
+                  onChanged: (val) {
                     ref.read(refreshProvider.notifier).state =
                         DateTime.now().toString();
                   },
@@ -46,7 +48,10 @@ class Categories extends ConsumerWidget {
               Consumer(
                 builder: (context, ref, child) {
                   ref.watch(refreshProvider);
-                  return Expanded(child: CategoriesPagination(query: searchCnt.text,));
+                  return Expanded(
+                      child: CategoriesPagination(
+                    query: searchCnt.text,
+                  ));
                 },
               )
             ],

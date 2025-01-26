@@ -19,9 +19,7 @@ class LoginLogic {
   final formKey = GlobalKey<FormState>();
 
   Future<void> login() async {
-    if (emailCnt.text.isEmpty || passwordCnt.text.isEmpty) {
-      Dialogs().messageDialog(context, "Some Field is required");
-    } else {
+
       Dialogs().loadingDialog(context);
       ApiManager.login(username: emailCnt.text, password: passwordCnt.text)
           .then((value) {
@@ -46,6 +44,5 @@ class LoginLogic {
         Navigator.pop(context);
         Dialogs().messageDialog(context, onError.toString());
       });
-    }
   }
 }

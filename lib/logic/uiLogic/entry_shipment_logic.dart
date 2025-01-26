@@ -47,17 +47,17 @@ class EntryShipmentLogic {
         }
       });
     } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
+      barcodeScanRes = 'Failed to get platform version.'.tr();
     }
   }
 
   void create() {
     if (children.isEmpty) {
-      return Dialogs().messageDialog(context, "at least add one item");
+      return Dialogs().messageDialog(context, "at least add one item".tr());
     }
 
     if (ref.read(clientProvider.notifier).state == null) {
-      return Dialogs().messageDialog(context, "Please choose  client");
+      return Dialogs().messageDialog(context, "Please choose  client".tr());
     }
 
     Dialogs().loadingDialog(context);

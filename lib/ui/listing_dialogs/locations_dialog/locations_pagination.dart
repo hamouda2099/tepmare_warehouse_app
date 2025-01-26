@@ -55,28 +55,31 @@ class LocationsDialogPagination extends ConsumerWidget {
                                   itemCount:
                                       snapshot.data!.locations?.length ?? 0,
                                   itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        LocationsListDialog.selectedLocation =
-                                            snapshot.data?.locations?[index];
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        width: screenWidth / 2,
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              kSecondaryColor.withOpacity(0.05),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          snapshot.data?.locations?[index]
-                                                  .barcode ??
-                                              "",
-                                          style: const TextStyle(
-                                            color: kPrimaryColor,
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          LocationsListDialog.selectedLocation =
+                                              snapshot.data?.locations?[index];
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          width: screenWidth / 2,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                kSecondaryColor.withOpacity(0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            snapshot.data?.locations?[index]
+                                                    .barcode ??
+                                                "",
+                                            style: const TextStyle(
+                                              color: kPrimaryColor,
+                                            ),
                                           ),
                                         ),
                                       ),

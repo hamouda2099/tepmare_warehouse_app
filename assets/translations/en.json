@@ -73,7 +73,27 @@
   "Change Language": "Change Language",
   "English": "English",
   "French": "French",
-  "QTY: ": "QTY: "
+  "QTY: ": "QTY: ",
+  "Add to List": "Add to List",
+  "Enter QTY From": "Enter QTY From",
+  "Enter Quantity": "Enter Quantity",
+  "user not found": "user not found",
+  "incorrect password": "incorrect password",
+  "label is required": "label is required",
+  "category deleted successfully": "category deleted successfully",
+  "category updated successfully": "category updated successfully",
+  "firstName, username, email, phoneNumber, password, email, companyName, address, postalCode, tva, siren, type are required":"firstName, username, email, phoneNumber, password, email, companyName, address, postalCode, tva, siren, type are required",
+  "client deleted successfully": "client deleted successfully",
+  "client not found": "client not found",
+  "client updated successfully": "client updated successfully",
+  "stock tranferd successfully": "stock tranferd successfully",
+  "simple": "simple",
+  "composite": "composite",
+  "Item Not Found": "Item Not Found",
+  "Failed to get platform version.": "Failed to get platform version.",
+  "at least add one item": "at least add one item",
+  "Please choose  client": "Please choose  client",
+  "Cannot exceed available stock of": "Cannot exceed available stock of"
 
 
 
