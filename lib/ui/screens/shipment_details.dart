@@ -1,17 +1,20 @@
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
+import 'package:tepmare_warehouse_man_app/main.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/secondary_app_bar.dart';
 
 import '../../config/date_formatter.dart';
 import '../../config/navigator.dart';
 import '../../dialogs/basic_dialogs.dart';
+import '../../dialogs/receive_item_dialog.dart';
 import '../../logic/services/api_manager.dart';
 import '../../models/locations_model.dart';
 import '../../models/shipment_details_model.dart';
-import '../listing_dialogs/locations_dialog/locations_dialog.dart';
+import '../components/barcode_service.dart';
 
 class ShipmentDetails extends StatelessWidget {
   ShipmentDetails(this.shipmentId);
@@ -279,9 +282,9 @@ class ShipmentDetails extends StatelessWidget {
                                                 Colors.black.withOpacity(0.8),
                                             fontWeight: FontWeight.bold),
                                       )),
-                                  const Text(
-                                    "www.compnyname.com",
-                                    style: TextStyle(
+                                  Text(
+                                    shipment?.client?.webSite ?? "",
+                                    style: const TextStyle(
                                         color: kSecondaryColor,
                                         fontWeight: FontWeight.bold),
                                   )
@@ -294,14 +297,14 @@ class ShipmentDetails extends StatelessWidget {
                                     color: Colors.black.withOpacity(0.8),
                                     fontWeight: FontWeight.bold),
                               ),
-                              const Text(
-                                "Country, State, Street , Villa",
-                                style: TextStyle(
+                              Text(
+                                "${shipment?.client?.address}",
+                                style: const TextStyle(
                                     color: kPrimaryColor,
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                "332367",
+                                "${shipment?.client?.postalCode}",
                                 style: TextStyle(
                                     color: Colors.black.withOpacity(0.8),
                                     fontWeight: FontWeight.bold),
@@ -313,23 +316,24 @@ class ShipmentDetails extends StatelessWidget {
                                     color: Colors.black.withOpacity(0.8),
                                     fontWeight: FontWeight.bold),
                               ),
-                              const Text(
-                                "Country, State, Street , Villa",
-                                style: TextStyle(
+                              Text(
+                                shipment?.client?.deliveryAddress ?? "",
+                                style: const TextStyle(
                                     color: kPrimaryColor,
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                "332367",
+                                shipment?.client?.deliveryPostalCode ?? "",
                                 style: TextStyle(
                                     color: Colors.black.withOpacity(0.8),
                                     fontWeight: FontWeight.bold),
                               ),
-                              shipment?.status == "preparing"
+                              shipment?.status == "pending" &&
+                                      shipment?.type == 'exit'
                                   ? InkWell(
                                       onTap: () {
                                         Dialogs().loadingDialog(context);
-                                        ApiManager.completeShipment(
+                                        ApiManager.deliverShipment(
                                                 shipmentId: shipmentId)
                                             .then((value) {
                                           Navigator.pop(context);
@@ -346,21 +350,23 @@ class ShipmentDetails extends StatelessWidget {
                                         });
                                       },
                                       child: Container(
-                                        width: screenWidth / 1.2,
                                         alignment: Alignment.center,
                                         padding: const EdgeInsets.only(
                                             left: 10,
                                             right: 10,
-                                            top: 5,
-                                            bottom: 5),
+                                            top: 10,
+                                            bottom: 10),
                                         decoration: BoxDecoration(
                                           color: kGreenColor,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
-                                        child:  Text(
-                                          "Complete".tr(),
-                                          style: TextStyle(color: Colors.white),
+                                        child: Text(
+                                          "Deliver".tr(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -368,11 +374,12 @@ class ShipmentDetails extends StatelessWidget {
                                       width: 80,
                                     ),
                               20.h,
-                               Text(
+                              Text(
                                 "Items".tr(),
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               5.h,
                               Container(
@@ -383,8 +390,8 @@ class ShipmentDetails extends StatelessWidget {
                               Column(
                                 children: List.generate(
                                     shipment?.items?.length ?? 0,
-                                    (index) =>
-                                        ItemRow(shipment?.items?[index])),
+                                    (index) => ItemRow(shipment?.items?[index],
+                                        shipment?.type ?? "")),
                               )
                             ],
                           ),
@@ -402,9 +409,10 @@ class ShipmentDetails extends StatelessWidget {
 }
 
 class ItemRow extends ConsumerWidget {
-  ItemRow(this.item);
+  ItemRow(this.item, this.shipmentType);
 
   Item? item;
+  String? shipmentType;
   TextEditingController controller = TextEditingController();
   final locationProvider = StateProvider<Location?>((ref) => null);
   final locationBarcodeProvider = StateProvider<String?>((ref) => null);
@@ -416,8 +424,9 @@ class ItemRow extends ConsumerWidget {
       padding: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
       margin: const EdgeInsets.only(top: 5, bottom: 5),
       decoration: BoxDecoration(
-          color: kSecondaryColor.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(15)),
+        color: kSecondaryColor.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: Column(
         children: [
           Row(
@@ -426,147 +435,222 @@ class ItemRow extends ConsumerWidget {
               Text(
                 item?.designation ?? "",
                 style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(
-                  width: 60,
-                  child: item?.receivedQty == null
-                      ? InkWell(
-                          onTap: () {
-                            Dialogs().loadingDialog(context);
-                            ApiManager.receiveItem(
-                                    itemId: item?.id?.toString() ?? "",
-                                    shipmentId:
-                                        item?.shipmentId?.toString() ?? "",
-                                    locationId: ref
-                                            .read(locationProvider.notifier)
-                                            .state
-                                            ?.id
-                                            ?.toString() ??
-                                        "",
-                                    qty: controller.text)
-                                .then((value) {
-                              Navigator.pop(context);
-                              if (value['statusCode'] == 200) {
-                                navigator(
-                                  context: context,
-                                  screen: ShipmentDetails(
-                                      item?.shipmentId?.toString() ?? ""),
-                                  replacement: true,
-                                );
-                              } else {
-                                Dialogs().messageDialog(
-                                    context, value['message'] ?? "");
-                              }
-                            });
-                          },
-                          child: const Icon(
-                            Icons.done_outline,
-                            color: kGreenColor,
-                          ),
-                        )
-                      : null)
-            ],
-          ),
-          10.h,
-          Row(
-            children: [
-               Text(
-                "Reported QTY: ".tr(),
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                item?.reportedQty?.toString() ?? "",
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          10.h,
-          Row(
-            children: [
-               Text(
-                "Received QTY: ".tr(),
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-              item?.receivedQty == null
-                  ? Container(
-                      width: screenWidth / 4,
-                      margin: const EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                              color: kPrimaryColor.withOpacity(0.3), width: 1)),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        controller: controller,
-                        keyboardType: TextInputType.number,
-                        decoration:  InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                          hintText: "Enter Qty".tr(),
-                          hintStyle: TextStyle(fontSize: 12),
-                        ),
-                      ))
-                  : Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        item?.receivedQty?.toString() ?? "",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-            ],
-          ),
-          Row(
-            children: [
-               Text(
-                "Location: ".tr(),
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-              InkWell(
-                onTap: () {
-                  if (item?.locationId == null) {
-                    LocationsListDialog().show(context).then((value) {
-                      if (value != null) {
-                        ref.read(locationBarcodeProvider.notifier).state =
-                            value.barcode;
-                        ref.read(locationProvider.notifier).state = value;
-                      }
-                    });
-                  }
-                },
+              Container(
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  top: 5,
+                  bottom: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: kSecondaryColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: Text(
-                  item?.locationId?.toString() ??
-                      ref.read(locationProvider.notifier).state?.barcode ??
-                      "Select Location".tr(),
-                  style: TextStyle(
-                      color: item?.locationId == null
-                          ? kSecondaryColor
-                          : Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
+                  item?.type?.toString() ?? "",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
           ),
+          10.h,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Reported QTY: ".tr(),
+                style: const TextStyle(
+                  color: kSecondaryColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                item?.reportedQty?.toString() ?? "",
+                style: const TextStyle(
+                  color: kSecondaryColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          10.h,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Received QTY: ".tr(),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                item?.receivedQty?.toString() ?? "",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          10.h,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Location: ".tr(),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              shipmentType == 'exit'
+                  ? BarcodeService(Barcode.code128())
+                      .buildBarcode(item?.location ?? "")
+                  : (item?.locations?.length == 1)
+                      ? BarcodeService(Barcode.code128())
+                          .buildBarcode(item?.locations?[0] ?? "")
+                      : InkWell(
+                          onTap: () {
+                            showItemLocations(
+                              context,
+                              item?.locations,
+                            );
+                          },
+                          child: const Icon(
+                            Icons.list_alt_rounded,
+                            color: kPrimaryColor,
+                          ),
+                        ),
+            ],
+          ),
+          10.h,
+          shipmentType == 'exit'
+              ? const SizedBox(
+                  width: 100,
+                )
+              : item?.receivedQty == null
+                  ? InkWell(
+                      onTap: () {
+                        ReceiveItem.locationsWidgets = [];
+                        ReceiveItem.locations = [];
+                        ReceiveItem()
+                            .receiveItem(context, item: item)
+                            .then((locations) {
+                          Dialogs().loadingDialog(globalKey.currentContext!);
+                          ApiManager.receiveItem(
+                                  id: item?.id.toString() ?? "",
+                                  itemId: item?.itemId?.toString() ?? "",
+                                  shipmentId:
+                                      item?.shipmentId?.toString() ?? "",
+                                  locations: locations)
+                              .then((value) {
+                            Navigator.pop(context);
+                            if (value['statusCode'] == 200) {
+                              navigator(
+                                context: context,
+                                screen: ShipmentDetails(
+                                    item?.shipmentId?.toString() ?? ""),
+                                replacement: true,
+                              );
+                            } else {
+                              Dialogs().messageDialog(
+                                context,
+                                value['message'],
+                              );
+                            }
+                          });
+                        });
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.all(10),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: kPrimaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "Receive Item",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                    )
+                  : 0.w
         ],
       ),
     );
   }
+}
+
+showItemLocations(BuildContext context, List? locations) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Item Locations".tr(),
+                style: const TextStyle(
+                  color: kPrimaryColor,
+                  fontSize: 16,
+                ),
+              ),
+              InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.red,
+                  )),
+            ],
+          ),
+          content: SizedBox(
+            width: screenWidth / 1.5,
+            height: screenHeight / 2,
+            child: ListView.builder(
+                itemCount: locations?.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 100,
+                    margin: const EdgeInsets.only(
+                      bottom: 10,
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: BarcodeService(
+                      Barcode.code128(),
+                    ).buildBarcode(locations?[index] ?? ""),
+                  );
+                }),
+          ),
+        );
+      });
 }

@@ -44,7 +44,8 @@ void showItemChildren(BuildContext context, {required CreateItemLogic logic}) {
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
-                                  fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Row(
                               children: [
@@ -53,7 +54,8 @@ void showItemChildren(BuildContext context, {required CreateItemLogic logic}) {
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
-                                      fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -65,7 +67,8 @@ void showItemChildren(BuildContext context, {required CreateItemLogic logic}) {
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 14,
-                                        fontWeight: FontWeight.bold),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -90,9 +93,14 @@ void showItemChildren(BuildContext context, {required CreateItemLogic logic}) {
                             itemBuilder: (context, index) {
                               return Container(
                                 height: 45,
-                                margin: const EdgeInsets.only(top: 5, bottom: 5),
+                                margin: const EdgeInsets.only(
+                                  top: 5,
+                                  bottom: 5,
+                                ),
                                 width: screenWidth / 4,
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(
+                                  10,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.grey.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(10),
@@ -101,10 +109,12 @@ void showItemChildren(BuildContext context, {required CreateItemLogic logic}) {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(CreateItemLogic.children[index]
-                                        ['designation']),
+                                          ['designation'],
+                                    ),
                                     const Spacer(),
                                     Text(CreateItemLogic.children[index]['qty']
-                                        .toString()),
+                                          .toString(),
+                                    ),
                                     const SizedBox(
                                       width: 10,
                                     ),
@@ -121,7 +131,8 @@ void showItemChildren(BuildContext context, {required CreateItemLogic logic}) {
                                           child: const Icon(
                                             Icons.delete,
                                             color: Colors.red,
-                                          )),
+                                        ),
+                                      ),
                                     )
                                   ],
                                 ),

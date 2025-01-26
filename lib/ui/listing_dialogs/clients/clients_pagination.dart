@@ -55,28 +55,32 @@ class ClientsDialogPagination extends ConsumerWidget {
                                   itemCount:
                                       snapshot.data!.clients?.length ?? 0,
                                   itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        ClientsListDialog.selectedClient =
-                                            snapshot.data?.clients?[index];
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        width: screenWidth / 2,
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              kSecondaryColor.withOpacity(0.05),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          snapshot.data?.clients?[index]
-                                                  .username ??
-                                              "",
-                                          style: const TextStyle(
-                                            color: kPrimaryColor,
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          ClientsListDialog.selectedClient =
+                                              snapshot.data?.clients?[index];
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          width: screenWidth / 2,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: kSecondaryColor
+                                                .withOpacity(0.05),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            snapshot.data?.clients?[index]
+                                                    .username ??
+                                                "",
+                                            style: const TextStyle(
+                                              color: kPrimaryColor,
+                                            ),
                                           ),
                                         ),
                                       ),

@@ -1,9 +1,12 @@
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/models/items_model.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/secondary_app_bar.dart';
+
+import '../components/barcode_service.dart';
 
 class ItemDetails extends StatelessWidget {
   ItemDetails({required this.item});
@@ -12,6 +15,7 @@ class ItemDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -77,9 +81,9 @@ class ItemDetails extends StatelessWidget {
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
-                        const Text(
-                          "0",
-                          style: TextStyle(
+                        Text(
+                          item.stock.toString(),
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
@@ -242,6 +246,12 @@ class ItemDetails extends StatelessWidget {
                   )
                 ],
               ),
+              40.h,
+              SizedBox(
+                width: screenWidth / 2,
+                child: BarcodeService(Barcode.code128())
+                    .buildBarcode(item.barcode ?? ""),
+              )
             ],
           ),
         ),

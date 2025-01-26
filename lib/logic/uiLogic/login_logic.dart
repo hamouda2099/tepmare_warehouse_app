@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/config/user_data.dart';
+import 'package:tepmare_warehouse_man_app/logic/functions/show_snack_bar.dart';
 import 'package:tepmare_warehouse_man_app/logic/services/cache_manager.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/home.dart';
 
@@ -15,6 +16,7 @@ class LoginLogic {
   final isPasswordVisibleProvider = StateProvider<bool>((ref) => false);
   TextEditingController emailCnt = TextEditingController();
   TextEditingController passwordCnt = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   Future<void> login() async {
     if (emailCnt.text.isEmpty || passwordCnt.text.isEmpty) {
@@ -35,7 +37,10 @@ class LoginLogic {
             remove: true,
           );
         } else {
-          Dialogs().messageDialog(context, value.message ?? 'Error !');
+          showSnackBar(
+              context: context,
+              message: value.message ?? 'Error !',
+              error: true);
         }
       }).catchError((onError) {
         Navigator.pop(context);

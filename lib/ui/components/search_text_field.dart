@@ -9,7 +9,7 @@ class SearchTextField extends StatelessWidget {
   });
 
   TextEditingController controller;
-  Function onChanged;
+  Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class SearchTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         onChanged: (val) {
-          onChanged();
+          onChanged(val);
         },
         style: const TextStyle(
           color: kPrimaryColor,

@@ -2,23 +2,23 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
+import 'package:tepmare_warehouse_man_app/logic/functions/helper_functions.dart';
 import 'package:tepmare_warehouse_man_app/logic/uiLogic/create_location_logic.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/custom_text_field.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/secondary_app_bar.dart';
-import 'package:tepmare_warehouse_man_app/ui/screens/sites.dart';
 
 import '../../config/constants.dart';
-import '../../config/navigator.dart';
-import '../../dialogs/basic_dialogs.dart';
-import '../../logic/services/api_manager.dart';
 import '../components/dropdown_menu_component.dart';
 import '../listing_dialogs/sites_dialog/sites_dialog.dart';
 
-class CreateLocation extends StatelessWidget {
+class CreateLocation extends ConsumerWidget {
   CreateLocationLogic logic = CreateLocationLogic();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    logic.context = context;
+    logic.ref = ref;
     return Scaffold(
+      backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -26,116 +26,133 @@ class CreateLocation extends StatelessWidget {
             children: [
               SecondaryAppBar("Create Location".tr()),
               20.h,
-              CustomTextField(
-                controller: logic.hallCnt,
-                hint: "Hall".tr(),
-              ),
-              10.h,
-              SizedBox(
-                width: screenWidth / 1.2,
-                child: DropdownMenuComponent(
-                  icon: Icons.list,
-                  hintText: 'Aisle'.tr(),
-                  items: logic.aisles,
-                  valueProvider: logic.aisleProvider,
-                ),
-              ),
-              10.h,
-              SizedBox(
-                width: screenWidth / 1.2,
-                child: DropdownMenuComponent(
-                  icon: Icons.list,
-                  hintText: 'Field'.tr(),
-                  items: logic.fields,
-                  valueProvider: logic.fieldProvider,
-                ),
-              ),
-              10.h,
-              CustomTextField(
-                controller: logic.positionCnt,
-                hint: "Position".tr(),
-              ),
-              10.h,
-              CustomTextField(
-                width: screenWidth / 1.2,
-                controller: logic.typeCnt,
-                hint: "Type".tr(),
-                validator: (val) {
-                  if (logic.typeCnt.text.isEmpty) {
-                    return 'This field is required'.tr();
-                  } else {
-                    return null;
-                  }
-                },
-              ),
-              10.h,
-              SizedBox(
-                width: screenWidth / 1.2,
-                child: DropdownMenuComponent(
-                  icon: Icons.list,
-                  hintText: 'Level'.tr(),
-                  items: logic.levels,
-                  valueProvider: logic.levelProvider,
-                ),
-              ),
-              20.h,
-              Consumer(
-                builder: (context, ref, child) {
-                  ref.watch(logic.siteProvider);
-                  ref.watch(logic.siteNameProvider);
-                  return Container(
-                    height: 50,
-                    width: screenWidth / 1.2,
-                    padding: const EdgeInsets.only(
-                      left: 15,
-                      right: 15,
-                    ),
+              Expanded(
+                child: Form(
+                  key: logic.formKey,
+                  child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(ref
-                                    .read(logic.siteProvider.notifier)
-                                    .state
-                                    ?.label ??
-                                "Select Site".tr()),
-                            InkWell(
-                              onTap: () {
-                                SitesListDialog().show(context).then((value) {
-                                  if (value != null) {
-                                    ref
-                                        .read(logic.siteProvider.notifier)
-                                        .state = value;
-                                    ref
-                                        .read(logic.siteNameProvider.notifier)
-                                        .state = value.label;
-                                  }
-                                });
-                              },
-                              child: Image.asset(
-                                "assets/images/sites.png",
-                                width: 20,
-                                height: 20,
-                                color: kPrimaryColor,
-                              ),
-                            ),
-                          ],
+                        CustomTextField(
+                          controller: logic.hallCnt,
+                          hint: "Hall".tr(),
+                          validator: HelperFunctions.validateFieldRequired,
                         ),
-                        5.h,
-                        Divider()
+                        10.h,
+                        DropdownMenuComponent(
+                          icon: Icons.list,
+                          hintText: 'Aisle'.tr(),
+                          items: logic.aisles,
+                          valueProvider: logic.aisleProvider,
+                          validator: (val) {
+                            if (ref.read(logic.aisleProvider.notifier).state ==
+                                null) {
+                              return 'This field is required'.tr();
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        10.h,
+                        DropdownMenuComponent(
+                          icon: Icons.list,
+                          hintText: 'Field'.tr(),
+                          items: logic.fields,
+                          valueProvider: logic.fieldProvider,
+                          validator: (val) {
+                            if (ref.read(logic.fieldProvider.notifier).state ==
+                                null) {
+                              return 'This field is required'.tr();
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        10.h,
+                        CustomTextField(
+                          controller: logic.positionCnt,
+                          hint: "Position".tr(),
+                          validator: HelperFunctions.validateFieldRequired,
+                        ),
+                        10.h,
+                        CustomTextField(
+                          controller: logic.typeCnt,
+                          hint: "Type".tr(),
+                          validator: HelperFunctions.validateFieldRequired,
+                        ),
+                        10.h,
+                        DropdownMenuComponent(
+                          icon: Icons.list,
+                          hintText: 'Level'.tr(),
+                          items: logic.levels,
+                          valueProvider: logic.levelProvider,
+                          validator: (val) {
+                            if (ref.read(logic.levelProvider.notifier).state ==
+                                null) {
+                              return 'This field is required'.tr();
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        20.h,
+                        Consumer(
+                          builder: (context, ref, child) {
+                            ref.watch(logic.siteProvider);
+                            ref.watch(logic.siteNameProvider);
+                            return Container(
+                              width: screenWidth,
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: kGreyColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(ref
+                                          .read(logic.siteProvider.notifier)
+                                          .state
+                                          ?.label ??
+                                      "Select Site".tr()),
+                                  InkWell(
+                                    onTap: () {
+                                      SitesListDialog()
+                                          .show(context)
+                                          .then((value) {
+                                        if (value != null) {
+                                          ref
+                                              .read(logic.siteProvider.notifier)
+                                              .state = value;
+                                          ref
+                                              .read(logic
+                                                  .siteNameProvider.notifier)
+                                              .state = value.label;
+                                        }
+                                      });
+                                    },
+                                    child: Image.asset(
+                                      "assets/images/sites.png",
+                                      width: 20,
+                                      height: 20,
+                                      color: kPrimaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
-              Spacer(),
               InkWell(
                 onTap: () {
                   logic.create();
                 },
                 child: Container(
-                  width: screenWidth / 1.3,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.only(
                     top: 12,

@@ -3,7 +3,6 @@ import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/config/navigator.dart';
 import 'package:tepmare_warehouse_man_app/models/items_model.dart';
-
 import 'package:tepmare_warehouse_man_app/ui/screens/item_details.dart';
 
 import '../../dialogs/basic_dialogs.dart';
@@ -17,16 +16,26 @@ class ItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        navigator(context: context, screen: ItemDetails(item: item,));
+      onTap: () {
+        navigator(
+          context: context,
+          screen: ItemDetails(
+            item: item,
+          ),
+        );
       },
       child: Padding(
-        padding: const EdgeInsets.only(top: 10.0),
+        padding: const EdgeInsets.only(
+          top: 10.0,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                left: 10,
+                right: 10,
+              ),
               child: Row(
                 children: [
                   Column(
@@ -60,25 +69,30 @@ class ItemRow extends StatelessWidget {
                   ),
                   10.w,
                   InkWell(
-                      onTap: () {
-                        Dialogs().loadingDialog(context);
-                        ApiManager.deleteItem(id: item.id.toString()).then((value) {
-                          Navigator.pop(context);
-                          if (value['statusCode'] == 200) {
-                            navigator(
-                                context: context,
-                                screen: Items(),
-                                replacement: true);
-                          } else {
-                            Dialogs().messageDialog(context, value['message'] ?? "");
-                          }
-                        });
-                      },
-                      child: Image.asset(
-                        "assets/images/trash.png",
-                        width: 25,
-                      )),
-
+                    onTap: () {
+                      Dialogs().loadingDialog(context);
+                      ApiManager.deleteItem(id: item.id.toString())
+                          .then((value) {
+                        Navigator.pop(context);
+                        if (value['statusCode'] == 200) {
+                          navigator(
+                            context: context,
+                            screen: Items(),
+                            replacement: true,
+                          );
+                        } else {
+                          Dialogs().messageDialog(
+                            context,
+                            value['message'] ?? "",
+                          );
+                        }
+                      });
+                    },
+                    child: Image.asset(
+                      "assets/images/trash.png",
+                      width: 25,
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -6,6 +6,7 @@ import '../../config/navigator.dart';
 import '../../dialogs/basic_dialogs.dart';
 import '../../models/sites_model.dart';
 import '../../ui/screens/locations.dart';
+import '../functions/show_snack_bar.dart';
 import '../services/api_manager.dart';
 
 
@@ -68,7 +69,10 @@ class CreateLocationLogic {
         if (value['statusCode'] == 200) {
           navigator(context: context, screen: Locations());
         } else {
-          Dialogs().messageDialog(context, value["message"]);
+          showSnackBar(
+              context: context,
+              message: value['message'] ?? 'Error !',
+              error: true);
         }
       });
     }
@@ -90,8 +94,11 @@ class CreateLocationLogic {
         if (value['statusCode'] == 200) {
           navigator(context: context, screen: Locations());
         } else {
-          Dialogs().messageDialog(context, value["message"]);
-        }
-      });
+        showSnackBar(
+            context: context,
+            message: value['message'] ?? 'Error !',
+            error: true);
+      }
+    });
     }
 }

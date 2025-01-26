@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:tepmare_warehouse_man_app/logic/services/cache_manager.dart';
 
 import '../../config/env.dart';
@@ -49,6 +48,7 @@ class ApiManager {
   static final String _shipmentUrl = '${Env.baseApi}/shipment';
   static final String _receiveItemUrl = '${Env.baseApi}/receive_item';
   static final String _completeShipmentUrl = '${Env.baseApi}/complete_shipment';
+  static final String _deliverShipmentUrl = '${Env.baseApi}/deliver_shipment';
   static final String _trackingOrdersUrl = '${Env.baseApi}/tracking_orders';
   static final String _uploadDocumentsUrl = '${Env.baseApi}/upload_document';
   static final String _uploadInvoiceUrl = '${Env.baseApi}/upload_invoice';
@@ -162,11 +162,13 @@ class ApiManager {
     String page = '1',
     String limit = '10',
     String query = '',
+    String? clientId,
   }) async {
-    Map<String, String> parameters = {
+    Map<String, dynamic> parameters = {
       "page": page,
       "limit": limit,
-      "query": query
+      "query": query,
+      "clientId": clientId,
     };
     return StockModel.fromJson(json
         .decode((await sendGetRequest(_stockUrl + toQuery(parameters))).body));
@@ -475,10 +477,20 @@ class ApiManager {
   }) async {
     Map<String, dynamic> parameters = {
       "barcode": barcode,
-
     };
     return json
         .decode((await sendGetRequest("$_itemsUrl/item_by_code${toQuery(parameters)}")).body);
+  }
+
+  static Future<dynamic> getStockByBarcode({
+    String? barcode,
+  }) async {
+    Map<String, dynamic> parameters = {
+      "barcode": barcode,
+    };
+    return json.decode(
+        (await sendGetRequest("$_stockUrl/stock_by_code${toQuery(parameters)}"))
+            .body);
   }
 
   static Future<dynamic> deleteItem({
@@ -556,6 +568,21 @@ class ApiManager {
         (await sendPutRequest("$_shipmentsUrl/$shipmentId", parameters)).body);
   }
 
+  static Future<dynamic> receiveItem({
+    required String id,
+    required String itemId,
+    required String shipmentId,
+    required List locations,
+  }) async {
+    Map<String, dynamic> parameters = {
+      'itemId': itemId,
+      'shipmentId': shipmentId,
+      'locations': jsonEncode(locations),
+    };
+    return jsonDecode(
+        (await sendPostRequest("$_receiveItemUrl/$id", parameters)).body);
+  }
+
   static Future<dynamic> createEntryShipment(
       {required String clientId,
       required String arrivalDate,
@@ -574,29 +601,21 @@ class ApiManager {
         (await sendPostRequest(_entryShipmentUrl, parameters)).body);
   }
 
-  static Future<dynamic> receiveItem({
-    required String itemId,
-    required String qty,
-    required String shipmentId,
-    required String locationId,
-  }) async {
-    Map<String, dynamic> parameters = {
-      'itemId': itemId,
-      'qty': qty,
-      'shipmentId': shipmentId,
-      'locationId': locationId,
-    };
-    print(parameters);
-    return jsonDecode(
-        (await sendPostRequest("$_receiveItemUrl/$itemId", parameters)).body);
-  }
-
   static Future<dynamic> completeShipment({
     required String shipmentId,
   }) async {
     Map<String, dynamic> parameters = {};
     return jsonDecode(
         (await sendPostRequest("$_completeShipmentUrl/$shipmentId", parameters))
+            .body);
+  }
+
+  static Future<dynamic> deliverShipment({
+    required String shipmentId,
+  }) async {
+    Map<String, dynamic> parameters = {};
+    return jsonDecode(
+        (await sendPostRequest("$_deliverShipmentUrl/$shipmentId", parameters))
             .body);
   }
 

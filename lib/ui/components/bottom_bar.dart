@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 
@@ -15,49 +14,66 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          UserData.user?.username ?? CacheManager.getUsername() ?? "",
-          style: const TextStyle(color: kGreyColor, fontSize: 16),
-        ),
-        const Spacer(),
-        InkWell(
-            onTap: () {
-              navigator(context: context, screen: const Home());
-            },
-            child: Image.asset(
-              "assets/images/dashboard.png",
-              width: 20,
-              height: 20,
+    return Padding(
+      padding: const EdgeInsets.all(30.0),
+      child: Row(
+        children: [
+          Text(
+            UserData.user?.username ?? CacheManager.getUsername() ?? "",
+            style: const TextStyle(
               color: kGreyColor,
-            )),
-        15.w,
-        InkWell(
-            onTap: () {
-              LanguagesDialog().languages(context: context, screen: Home());
-            },
-            child: Image.asset(
-              "assets/images/settings.png",
-              width: 20,
-              height: 20,
-              color: kGreyColor,
-            )),
-        15.w,
-        InkWell(
+              fontSize: 16,
+            ),
+          ),
+          const Spacer(),
+          InkWell(
+              onTap: () {
+                navigator(
+                  context: context,
+                  screen: const Home(),
+                );
+              },
+              child: Image.asset(
+                "assets/images/dashboard.png",
+                width: 20,
+                height: 20,
+                color: kGreyColor,
+              )),
+          15.w,
+          InkWell(
+              onTap: () {
+                LanguagesDialog().languages(
+                  context: context,
+                  screen: Home(),
+                );
+              },
+              child: Image.asset(
+                "assets/images/settings.png",
+                width: 20,
+                height: 20,
+                color: kGreyColor,
+              )),
+          15.w,
+          InkWell(
             onTap: () {
               UserData.token = null;
               UserData.user = null;
               CacheManager.setUserToken(null);
-              navigator(context: context, screen: Login(), remove: true);
+              navigator(
+                context: context,
+                screen: Login(),
+                remove: true,
+              );
             },
             child: Image.asset(
               "assets/images/logout.png",
               width: 20,
               height: 20,
               color: kGreyColor,
-            )),
-      ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

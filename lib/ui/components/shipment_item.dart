@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/config/navigator.dart';
-import 'package:tepmare_warehouse_man_app/models/items_model.dart';
 import 'package:tepmare_warehouse_man_app/models/shipments_model.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/edit_shipment.dart';
-
-import 'package:tepmare_warehouse_man_app/ui/screens/item_details.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/shipment_details.dart';
 
 class ShipmentItem extends StatelessWidget {
@@ -17,7 +14,12 @@ class ShipmentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        navigator(context: context, screen: ShipmentDetails(shipment.id.toString()));
+        navigator(
+          context: context,
+          screen: ShipmentDetails(
+            shipment.id.toString(),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 10.0),
@@ -73,8 +75,10 @@ class ShipmentItem extends StatelessWidget {
                   10.w,
                   InkWell(
                       onTap: () {
-                        navigator(context: context, screen: EditShipment(shipment));
-
+                        navigator(
+                          context: context,
+                          screen: EditShipment(shipment),
+                        );
                       },
                       child: Image.asset(
                         "assets/images/pen-circle.png",

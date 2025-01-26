@@ -3,41 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
-import 'package:tepmare_warehouse_man_app/config/navigator.dart';
-import 'package:tepmare_warehouse_man_app/ui/paginations/items_pagination.dart';
-import 'package:tepmare_warehouse_man_app/ui/screens/create_item.dart';
+import 'package:tepmare_warehouse_man_app/ui/paginations/stock_pagination.dart';
 
 import '../components/search_text_field.dart';
 import '../components/secondary_app_bar.dart';
 
-class Items extends ConsumerWidget {
+class StockScreen extends ConsumerWidget {
   final refreshProvider = StateProvider<String?>((ref) => null);
 
   TextEditingController searchCnt = TextEditingController();
+
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(
+            15.0,
+          ),
           child: Column(
             children: [
-              SecondaryAppBar("Items".tr(),onTapIcon: (){
-                  navigator(
-                    context: context,
-                    screen: CreateItem(),
-                  );
-                },),
+              SecondaryAppBar(
+                "Stock".tr(),
+              ),
               20.h,
               Container(
                 decoration: BoxDecoration(
-                    color: kGreyColor.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(15)
+                  color: kGreyColor.withOpacity(.1),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: SearchTextField(
                   controller: searchCnt,
-                  onChanged: (val){
+                  onChanged: (val) {
                     ref.read(refreshProvider.notifier).state =
                         DateTime.now().toString();
                   },
@@ -49,7 +47,7 @@ class Items extends ConsumerWidget {
                   ref.watch(refreshProvider);
 
                   return Expanded(
-                    child: ItemsPagination(
+                    child: StockPagination(
                       query: searchCnt.text,
                     ),
                   );

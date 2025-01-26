@@ -1,5 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:tepmare_warehouse_man_app/main.dart';
+
+import '../../config/constants.dart';
 
 class CacheManager {
   static Future<void> init() async {
@@ -8,6 +13,9 @@ class CacheManager {
     Hive.init(appDocumentDirectory.path);
     await Hive.openBox(CacheManager.kBoxName);
     await Hive.openBox(CacheManager.kBoxImagesName);
+    String? lang = getLanguageCode();
+    localLanguage = lang ?? "fr";
+    globalKey.currentContext!.setLocale(Locale(lang ?? "fr"));
   }
 
   static const String kBoxName = 'tepmare';

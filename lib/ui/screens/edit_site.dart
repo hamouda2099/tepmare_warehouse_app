@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/models/sites_model.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/custom_text_field.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/secondary_app_bar.dart';
@@ -15,6 +14,7 @@ class EditSite extends StatelessWidget {
   EditSite(this.site);
   Site site;
   TextEditingController siteLabel = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     siteLabel.text = site.label??"";
@@ -24,11 +24,13 @@ class EditSite extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SecondaryAppBar("Edit Site".tr()),
-              (screenHeight/3).h,
-              CustomTextField(controller: siteLabel,hint: "Enter Site Label".tr(),),
-              20.h,
+              CustomTextField(
+                controller: siteLabel,
+                hint: "Enter Site Label".tr(),
+              ),
               InkWell(
                 onTap: () {
                   Dialogs().loadingDialog(context);
@@ -46,7 +48,7 @@ class EditSite extends StatelessWidget {
                   });
                 },
                 child: Container(
-                  width: screenWidth / 1.3,
+                  width: screenWidth,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.only(
                     top: 12,

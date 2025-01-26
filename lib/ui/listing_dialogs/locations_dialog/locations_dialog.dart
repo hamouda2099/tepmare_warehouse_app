@@ -14,74 +14,80 @@ class LocationsListDialog {
 
   Future<Location?> show(BuildContext context) async {
     TextEditingController searchCnt = TextEditingController();
-    await showDialog(
+    await showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (context) {
-          return AlertDialog(
-            title: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          return Consumer(
+            builder: (context, ref, child) {
+              return Container(
+                width: screenWidth,
+                height: screenHeight / 1.2,
+                padding: EdgeInsets.only(
+                  top: 20,
+                  left: 20,
+                  right: 20,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(15),
+                      topLeft: Radius.circular(15),
+                    )),
+                child: Column(
                   children: [
-                     Text(
-                      "Select Location".tr(),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Select Location".tr(),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Image.asset(
+                              "assets/images/close.png",
+                              width: 25,
+                              height: 25,
+                            )),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1,
+                      color: Colors.black,
+                    ),
+                    SizedBox(
+                      width: screenWidth / 2,
+                      child: SearchTextField(
+                        controller: searchCnt,
+                        onChanged: (val) {
+                          ref.read(refreshProvider.notifier).state =
+                              DateTime.now().toString();
+                        },
                       ),
                     ),
-                    InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Image.asset(
-                          "assets/images/close.png",
-                          width: 25,
-                          height: 25,
-                        )),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        ref.watch(refreshProvider);
+                        return Expanded(
+                          child: LocationsDialogPagination(
+                            query: searchCnt.text,
+                          ),
+                        );
+                      },
+                    )
                   ],
                 ),
-                const Divider(
-                  thickness: 1,
-                  color: Colors.black,
-                ),
-              ],
-            ),
-            backgroundColor: Colors.white,
-            content: Consumer(
-              builder: (context, ref, child) {
-                return SizedBox(
-                  width: screenWidth / 2,
-                  height: screenHeight / 1.5,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: screenWidth / 2,
-                        child: SearchTextField(
-                          controller: searchCnt,
-                          onChanged: () {
-                            ref.read(refreshProvider.notifier).state =
-                                DateTime.now().toString();
-                          },
-                        ),
-                      ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          ref.watch(refreshProvider);
-                          return Expanded(
-                            child: LocationsDialogPagination(
-                              query: searchCnt.text,
-                            ),
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
+              );
+            },
           );
         });
     return selectedLocation;

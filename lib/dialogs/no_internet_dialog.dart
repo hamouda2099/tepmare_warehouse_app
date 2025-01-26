@@ -60,7 +60,10 @@ class InternetDialog {
                   child: Container(
                     width: 130,
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: kPrimaryColor,
                       boxShadow: boxShadow,

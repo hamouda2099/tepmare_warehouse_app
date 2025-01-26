@@ -45,6 +45,7 @@ class Item {
   String? barcode;
   String? category;
   String? description;
+  String? stock;
   num? width;
   num? height;
   num? weight;
@@ -59,6 +60,7 @@ class Item {
     this.barcode,
     this.category,
     this.client,
+    this.stock,
     this.description,
     this.width,
     this.weight,
@@ -73,8 +75,9 @@ class Item {
     sku: json["sku"],
     barcode: json["barcode"],
     category: json["category"],
-    description: json["description"],
-    width: json["width"],
+        stock: json["stock"],
+        description: json["description"],
+        width: json["width"],
     weight: json["weight"],
     height: json["height"],
     depth: json["depth"],
@@ -88,8 +91,9 @@ class Item {
     "sku": sku,
     "barcode": barcode,
     "category": category,
-    "description": description,
-    "width": width,
+        "stock": stock,
+        "description": description,
+        "width": width,
     "weight": weight,
     "height": height,
     "depth": depth,
@@ -98,7 +102,7 @@ class Item {
 }
 
 class Client {
-  int? clientId;
+  num? clientId;
   String? firstName;
   String? lastName;
 

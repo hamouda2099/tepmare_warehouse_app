@@ -1,16 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tepmare_warehouse_man_app/models/items_model.dart';
-import 'package:tepmare_warehouse_man_app/ui/components/item_row.dart';
+import 'package:tepmare_warehouse_man_app/models/stock_model.dart';
 
 import '../../../config/constants.dart';
 import '../../../logic/services/api_manager.dart';
+import '../components/stock_item.dart';
 
 /// Two variables in this class, first one is the function that returns list of data from api, second one is the custom widget that ListView.builder will return.
 /// To use this custom pagination list you have to change that function and returned widget.
-class ItemsPagination extends ConsumerWidget {
-  ItemsPagination({this.query});
+class StockPagination extends ConsumerWidget {
+  StockPagination({this.query});
 
   String? query;
   ScrollController scrollController = ScrollController();
@@ -37,12 +37,12 @@ class ItemsPagination extends ConsumerWidget {
         }
 
         /// (1) change this function.
-        ItemsModel itemsModel = await ApiManager.getItems(
+        StockModel stockModel = await ApiManager.getStock(
           page: page.toString(),
           limit: limit.toString(),
-          query: query??"",
+          query: query ?? "",
         );
-        List<Item>? tempFetchedData = itemsModel.items;
+        List<Stock>? tempFetchedData = stockModel.stock;
         if (tempFetchedData?.isEmpty ?? true) {
           isLastPage = true;
         }
@@ -63,10 +63,10 @@ class ItemsPagination extends ConsumerWidget {
     if (!initState) {
       initState = true;
       WidgetsBinding.instance.addPostFrameCallback(
-            (timeStamp) {
+        (timeStamp) {
           getData(widgetRef);
           scrollController.addListener(
-                () {
+            () {
               if (scrollController.position.atEdge &&
                   scrollController.position.pixels != 0) {
                 getData(widgetRef);
@@ -80,59 +80,62 @@ class ItemsPagination extends ConsumerWidget {
     final centerLoading = widgetRef.watch(centerLoadingProvider);
     final bottomLoading = widgetRef.watch(bottomLoadingProvider);
     return centerLoading
-        ? const Center(child: CircularProgressIndicator(color: kPrimaryColor,),)
-
+        ? const Center(
+            child: CircularProgressIndicator(
+              color: kPrimaryColor,
+            ),
+          )
         : fetchedData.isEmpty
-        ? Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.people,
-            size: 70,
-            color: Colors.grey,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            'No Data'.tr(),
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    )
-        : ListView.builder(
-      itemCount: fetchedData.length,
-      controller: scrollController,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return Column(
-          children: [
-            /// (2) change custom component for list view
-            ItemRow(
-              fetchedData[index],
-            ),
-            index == fetchedData.length - 1 && bottomLoading
-                ? Center(
-              child: Container(
-                width: 20,
-                height: 20,
-                margin: const EdgeInsets.only(bottom: 10),
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    color: kPrimaryColor,
-                  ),
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.people,
+                      size: 70,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'No Data'.tr(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            )
-                : const SizedBox(),
-          ],
-        );
-      },
-    );
+              )
+            : ListView.builder(
+                itemCount: fetchedData.length,
+                controller: scrollController,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      /// (2) change custom component for list view
+                      StockItem(
+                        fetchedData[index],
+                      ),
+                      index == fetchedData.length - 1 && bottomLoading
+                          ? Center(
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3,
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ],
+                  );
+                },
+              );
   }
 }

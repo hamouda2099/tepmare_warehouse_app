@@ -45,10 +45,10 @@ class Shipment {
   DateTime? arrivalDate;
   String? container;
   String? description;
-  dynamic destinationAddress;
-  dynamic nDApproClient;
+  String? destinationAddress;
+  String? nDApproClient;
   String? createdAt;
-  dynamic deletedAt;
+  String? deletedAt;
   Client? client;
   List<Item>? items;
 
@@ -116,10 +116,11 @@ class Client {
   String? username;
   String? email;
   String? fax;
+  String? webSite;
   String? address;
   String? postalCode;
   String? villa;
-  dynamic deliveryAddress;
+  String? deliveryAddress;
   String? deliveryPostalCode;
   String? deliveryVilla;
 
@@ -129,6 +130,7 @@ class Client {
     this.lastName,
     this.companyName,
     this.username,
+    this.webSite,
     this.email,
     this.fax,
     this.address,
@@ -145,6 +147,7 @@ class Client {
         lastName: json["lastName"],
         companyName: json["companyName"],
         username: json["username"],
+        webSite: json["website"],
         email: json["email"],
         fax: json["fax"],
         address: json["address"],
@@ -160,6 +163,7 @@ class Client {
         "firstName": firstName,
         "lastName": lastName,
         "companyName": companyName,
+        "website": webSite,
         "username": username,
         "email": email,
         "fax": fax,
@@ -180,6 +184,8 @@ class Item {
   num? receivedQty;
   num? locationId;
   String? type;
+  String? location;
+  List? locations;
   String? designation;
 
   Item({
@@ -189,7 +195,9 @@ class Item {
     this.reportedQty,
     this.receivedQty,
     this.locationId,
+    this.location,
     this.type,
+    this.locations,
     this.designation,
   });
 
@@ -201,7 +209,9 @@ class Item {
         receivedQty: json["received_qty"],
         locationId: json["location_id"],
         type: json["type"],
+        location: json["location"],
         designation: json["designation"],
+        locations: json["locations"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -212,6 +222,8 @@ class Item {
         "received_qty": receivedQty,
         "location_id": locationId,
         "type": type,
+        "location": location,
+        "locations": locations,
         "designation": designation,
       };
 }

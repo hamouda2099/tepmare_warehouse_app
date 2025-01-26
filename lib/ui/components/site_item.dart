@@ -31,13 +31,16 @@ class SiteItem extends StatelessWidget {
                 const Spacer(),
                 InkWell(
                     onTap: () {
-                      navigator(context: context, screen: EditSite(site));
-                    },
+                    navigator(
+                      context: context,
+                      screen: EditSite(site),
+                    );
+                  },
                     child: Image.asset(
                       "assets/images/pen-circle.png",
                       width: 25,
-                    )),
-
+                  ),
+                ),
               ],
             ),
           ),

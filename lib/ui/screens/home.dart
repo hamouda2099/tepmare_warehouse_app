@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/config/navigator.dart';
-import 'package:tepmare_warehouse_man_app/config/user_data.dart';
-import 'package:tepmare_warehouse_man_app/logic/services/cache_manager.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/bottom_bar.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/categories.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/items.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/locations.dart';
-import 'package:tepmare_warehouse_man_app/ui/screens/login.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/shipments.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/sites.dart';
+import 'package:tepmare_warehouse_man_app/ui/screens/stock_screen.dart';
 
 import '../../logic/services/api_manager.dart';
 import '../../models/statistics_model.dart';
@@ -24,6 +22,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
+      bottomNavigationBar: BottomBar(),
       body: SafeArea(
         child: Padding(
             padding: const EdgeInsets.all(15.0),
@@ -124,6 +123,8 @@ class Home extends StatelessWidget {
                               ),
                               10.h,
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   InkWell(
                                     onTap:(){
@@ -136,6 +137,19 @@ class Home extends StatelessWidget {
                                       data: snapshot.data?.shipments.toString(),
                                     ),
                                   ),
+                                  InkWell(
+                                    onTap: () {
+                                      navigator(
+                                          context: context,
+                                          screen: StockScreen());
+                                    },
+                                    child: DashboardCard(
+                                      icon: 'assets/images/stock.png',
+                                      color: Colors.blueGrey,
+                                      label: "Stock".tr(),
+                                      data: snapshot.data?.stock.toString(),
+                                    ),
+                                  ),
                                 ],
                               ),
 
@@ -145,8 +159,6 @@ class Home extends StatelessWidget {
                     }
                   },
                 ),
-                Spacer(),
-                BottomBar(),
               ],
             )),
       ),

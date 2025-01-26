@@ -14,6 +14,8 @@ class CustomTextField extends ConsumerWidget {
       this.onSubmit,
       this.pressedIcon,
       this.width,
+      this.enabled,
+      this.maxLines,
       this.validator});
 
   TextEditingController controller;
@@ -21,6 +23,7 @@ class CustomTextField extends ConsumerWidget {
   IconData? icon;
   bool? secure;
   bool? visibility;
+  bool? enabled;
   final String? Function(String?)? validator;
   TextInputType? textInputType = TextInputType.text;
   Function? onSubmit;
@@ -28,7 +31,7 @@ class CustomTextField extends ConsumerWidget {
   Widget? pressedIcon;
   final visibilityProvider = StateProvider<bool>((ref) => false);
   bool init = false;
-
+  int? maxLines;
   @override
   Widget build(BuildContext context, WidgetRef widgetRef) {
     final isVisibility = widgetRef.watch(visibilityProvider);
@@ -39,12 +42,14 @@ class CustomTextField extends ConsumerWidget {
       });
     }
     return Container(
-      height: 55,
-      width: width ?? screenWidth / 1.2,
+      width: width ?? screenWidth,
       padding: const EdgeInsets.only(
         left: 15,
         right: 15,
       ),
+      decoration: BoxDecoration(
+          color: kGreyColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
           icon == null
@@ -61,6 +66,8 @@ class CustomTextField extends ConsumerWidget {
                 ),
           Expanded(
             child: TextFormField(
+              enabled: enabled,
+              maxLines: maxLines,
               controller: controller,
               obscureText: isVisibility,
               validator: validator,
@@ -70,6 +77,7 @@ class CustomTextField extends ConsumerWidget {
               ),
               decoration: InputDecoration(
                 hintText: hint,
+                border: InputBorder.none,
                 hintStyle: const TextStyle(
                   color: kPrimaryColor,
                   fontSize: 14,

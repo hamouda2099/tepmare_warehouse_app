@@ -12,7 +12,6 @@ import '../../dialogs/basic_dialogs.dart';
 import '../../logic/functions/date_picker.dart';
 import '../../logic/services/api_manager.dart';
 import '../../models/shipments_model.dart';
-import '../components/dropdown_menu_component.dart';
 
 class EditShipment extends ConsumerWidget {
   EditShipment(this.shipment);
@@ -28,6 +27,7 @@ class EditShipment extends ConsumerWidget {
       ref.read(arrivalDateProvider.notifier).state = shipment.arrivalDate ?? "";
     });
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -35,113 +35,92 @@ class EditShipment extends ConsumerWidget {
             children: [
               SecondaryAppBar("Edit Shipment".tr()),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      (screenHeight / 3).h,
-                      Container(
-                          height: 45,
-                          width: screenWidth / 1.2,
-                          padding: const EdgeInsets.only(
-                            left: 15,
-                            right: 15,
-                          ),
-                          child: Consumer(
-                            builder: (context, ref, child) {
-                              ref.watch(arrivalDateProvider);
-                              return Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(ref
-                                              .read(
-                                                  arrivalDateProvider.notifier)
-                                              .state ??
-                                          "Arrival Date".tr()),
-                                      InkWell(
-                                        onTap: () {
-                                          datePicker(context).then((value) {
-                                            ref
-                                                .read(arrivalDateProvider
-                                                    .notifier)
-                                                .state = value;
-                                          });
-                                        },
-                                        child: const Icon(
-                                          Icons.edit_calendar_outlined,
-                                          color: kPrimaryColor,
-                                          size: 20,
-                                        ),
-                                      )
-                                    ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        width: screenWidth,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: kGreyColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            ref.watch(arrivalDateProvider);
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(ref
+                                        .read(arrivalDateProvider.notifier)
+                                        .state ??
+                                    "Arrival Date".tr()),
+                                InkWell(
+                                  onTap: () {
+                                    datePicker(context).then((value) {
+                                      ref
+                                          .read(arrivalDateProvider.notifier)
+                                          .state = value;
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.edit_calendar_outlined,
+                                    color: kPrimaryColor,
+                                    size: 20,
                                   ),
-                                  const Divider()
-                                ],
-                              );
-                            },
-                          )),
-                      SizedBox(
-                        width: screenWidth / 1.2,
-                        child: DropdownMenuComponent(
-                          icon: Icons.list,
-                          hintText: 'Status'.tr(),
-                          items: const ["terminated", "completed"],
-                          valueProvider: statusProvider,
-                        ),
-                      ),
-                      CustomTextField(
-                        controller: container,
-                        hint: "Container".tr(),
-                      ),
-                      20.h,
-                      InkWell(
-                        onTap: () {
-                          Dialogs().loadingDialog(context);
-                          ApiManager.editShipment(
-                                  shipmentId: shipment.id.toString(),
-                                  container: container.text,
-                                  status:
-                                      ref.read(statusProvider.notifier).state)
-                              .then((value) {
-                            Navigator.pop(context);
-                            if (value['statusCode'] == 200) {
-                              Navigator.pop(context);
-                              navigator(
-                                  context: context,
-                                  replacement: true,
-                                  screen: Shipments());
-                            } else {
-                              Dialogs().messageDialog(
-                                  context, value['message'] ?? "");
-                            }
-                          });
-                        },
-                        child: Container(
-                          width: screenWidth / 1.3,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.only(
-                            top: 12,
-                            bottom: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'Submit'.tr(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                                )
+                              ],
+                            );
+                          },
+                        )),
+                    20.h,
+                    CustomTextField(
+                      controller: container,
+                      hint: "Container".tr(),
+                    ),
+                    20.h,
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Dialogs().loadingDialog(context);
+                  ApiManager.editShipment(
+                          shipmentId: shipment.id.toString(),
+                          container: container.text,
+                          status: ref.read(statusProvider.notifier).state)
+                      .then((value) {
+                    Navigator.pop(context);
+                    if (value['statusCode'] == 200) {
+                      Navigator.pop(context);
+                      navigator(
+                          context: context,
+                          replacement: true,
+                          screen: Shipments());
+                    } else {
+                      Dialogs().messageDialog(context, value['message'] ?? "");
+                    }
+                  });
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(
+                    top: 12,
+                    bottom: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    'Submit'.tr(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

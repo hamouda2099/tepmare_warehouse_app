@@ -10,55 +10,60 @@ class DropdownMenuComponent extends ConsumerWidget {
     required this.items,
     required this.icon,
     required this.hintText,
-  });
+      this.width,
+      this.validator});
 
   StateProvider valueProvider;
   List items = [];
   IconData icon;
   String hintText;
+  double? width;
+  final FormFieldValidator? validator;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(valueProvider);
     return Container(
+      width: width ?? screenWidth,
       padding: const EdgeInsets.only(
         left: 15,
         right: 15,
       ),
-      child: Column(
-        children: [
-          DropdownButton(
-            borderRadius: BorderRadius.circular(10),
-            dropdownColor: Colors.white,
-            underline: const SizedBox(),
-            isExpanded: true,
-            iconSize: 20,
-            value: items.contains(value) ? value : null,
-            icon: const Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: kPrimaryColor,
+      decoration: BoxDecoration(
+          color: kGreyColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(10)),
+      child: DropdownButtonFormField(
+        decoration: InputDecoration(
+          border: InputBorder.none,
+        ),
+        validator: validator,
+        borderRadius: BorderRadius.circular(10),
+        dropdownColor: Colors.white,
+        isExpanded: true,
+        iconSize: 20,
+        value: items.contains(value) ? value : null,
+        icon: const Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: kPrimaryColor,
+        ),
+        hint: Text(
+          hintText,
+          style: const TextStyle(fontSize: 14, color: Colors.black),
+        ),
+        onChanged: (newValue) {
+          ref.read(valueProvider.notifier).state = newValue;
+        },
+        items: items.map((location) {
+          return DropdownMenuItem(
+            value: location,
+            child: Text(
+              location.toString(),
+              style: const TextStyle(
+                color: kPrimaryColor,
+              ),
             ),
-            hint: Text(
-              hintText,
-              style: const TextStyle(fontSize: 14, color: Colors.black),
-            ),
-            onChanged: (newValue) {
-              ref.read(valueProvider.notifier).state = newValue;
-            },
-            items: items.map((location) {
-              return DropdownMenuItem(
-                value: location,
-                child: Text(
-                  location.toString(),
-                  style: const TextStyle(
-                    color: kPrimaryColor,
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-          Divider(color: kGreyColor,)
-        ],
+          );
+        }).toList(),
       ),
     );
   }

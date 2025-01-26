@@ -7,138 +7,135 @@ import 'package:tepmare_warehouse_man_app/logic/uiLogic/exit_shipment_logic.dart
 void showExitShipmentItems(BuildContext context,
     {required ExitShipmentLogic logic}) {
   final childrenReBuilder = StateProvider<String?>((ref) => null);
-
-  showDialog(
+  showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (context) {
-        return Scaffold(
-          backgroundColor: kBackgroundColor,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Consumer(
-                builder: (context, ref, child) {
-                  ref.watch(childrenReBuilder);
-                  return Column(
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(15),
+                topLeft: Radius.circular(15),
+              )),
+          child: Consumer(
+            builder: (context, ref, child) {
+              ref.watch(childrenReBuilder);
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.red,
-                              )),
-                        ],
-                      ),
-                      SizedBox(
-                        width: screenWidth / 1.2,
-                        child:  Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.red,
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                    width: screenWidth / 1.2,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Items".tr(),
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Row(
                           children: [
                             Text(
-                              "Items".tr(),
-                              style: TextStyle(
+                              "Qty".tr(),
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Row(
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: 80,
+                              child: Text(
+                                "Delete".tr(),
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 2,
+                    width: screenWidth / 1.2,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: screenWidth / 1.2,
+                    height: screenHeight / 1.4,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: ExitShipmentLogic.children.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: 45,
+                            margin: const EdgeInsets.only(top: 5, bottom: 5),
+                            width: screenWidth / 4,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "Qty".tr(),
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
+                                Text(ExitShipmentLogic.children[index]
+                                    ['designation']),
+                                const Spacer(),
+                                Text(ExitShipmentLogic.children[index]['qty']
+                                    .toString()),
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 SizedBox(
                                   width: 80,
-                                  child: Text(
-                                    "Delete".tr(),
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
+                                  child: InkWell(
+                                      onTap: () {
+                                        ExitShipmentLogic.children
+                                            .removeAt(index);
+                                        ref
+                                            .read(childrenReBuilder.notifier)
+                                            .state = DateTime.now().toString();
+                                      },
+                                      child: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      )),
+                                )
                               ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 2,
-                        width: screenWidth / 1.2,
-                        color: Colors.black,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: screenWidth / 1.2,
-                        height: screenHeight / 1.4,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: ExitShipmentLogic.children.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                height: 45,
-                                margin:
-                                const EdgeInsets.only(top: 5, bottom: 5),
-                                width: screenWidth / 4,
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(ExitShipmentLogic.children[index]
-                                    ['designation']),
-                                    const Spacer(),
-                                    Text(ExitShipmentLogic.children[index]
-                                    ['qty']
-                                        .toString()),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    SizedBox(
-                                      width: 80,
-                                      child: InkWell(
-                                          onTap: () {
-                                            ExitShipmentLogic.children
-                                                .removeAt(index);
-                                            ref
-                                                .read(childrenReBuilder
-                                                .notifier)
-                                                .state =
-                                                DateTime.now().toString();
-                                          },
-                                          child: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          )),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      )
-                    ],
-                  );
-                },
-              ),
-            ),
+                            ),
+                          );
+                        }),
+                  )
+                ],
+              );
+            },
           ),
         );
       });

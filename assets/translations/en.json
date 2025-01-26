@@ -66,7 +66,14 @@
   "Select Category": "Select Category",
   "Designation": "Designation",
   "Create Category": "Create Category",
-  "No Data": "No Data"
+  "No Data": "No Data",
+  "Type: ": "Type: ",
+  "Item Locations": "Item Locations",
+  "Deliver": "Deliver",
+  "Change Language": "Change Language",
+  "English": "English",
+  "French": "French",
+  "QTY: ": "QTY: "
 
 
 

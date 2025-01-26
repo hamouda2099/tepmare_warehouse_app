@@ -66,5 +66,12 @@
   "Select Category": "Choisir une catégorie",
   "Designation": "Désignation",
   "Create Category": "Créer une catégorie",
-  "No Data": "Pas de données"
+  "No Data": "Pas de données",
+  "Type: ": "Type: ",
+  "Item Locations": "Emplacements des articles",
+  "Deliver": "Livrer",
+  "Change Language": "Changer de langue",
+  "English": "English",
+  "French": "French",
+  "QTY: ": "QTY: "
 }

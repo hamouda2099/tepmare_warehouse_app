@@ -4,7 +4,6 @@ import 'package:tepmare_warehouse_man_app/config/margin.dart';
 
 import '../config/constants.dart';
 import '../config/navigator.dart';
-import '../logic/services/api_manager.dart';
 import '../logic/services/cache_manager.dart';
 
 class LanguagesDialog {
@@ -30,23 +29,20 @@ class LanguagesDialog {
               Text(
                 'Change Language'.tr(),
                 style: const TextStyle(
-                  color: kSecondaryColor,
+                  color: kPrimaryColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontSize: 14,
                 ),
               ),
-              const SizedBox(
-                height: 50,
-                child: Divider(
-                  color: kSecondaryColor,
-                ),
+              10.h,
+              Divider(
+                color: kPrimaryColor,
               ),
               InkWell(
                 onTap: () {
                   CacheManager.setLanguageCode('en');
                   localLanguage = 'en';
                   context.setLocale(const Locale('en'));
-                  // ApiManager.updateUser(lang: "en");
                   navigator(
                     context: context,
                     remove: true,
@@ -55,7 +51,10 @@ class LanguagesDialog {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                  ),
                   child: Row(
                     children: [
                       const Image(
@@ -68,8 +67,8 @@ class LanguagesDialog {
                       Text(
                         'English'.tr(),
                         style: const TextStyle(
-                          color: kSecondaryColor,
-                          fontSize: 17,
+                          color: kPrimaryColor,
+                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -82,7 +81,6 @@ class LanguagesDialog {
                   CacheManager.setLanguageCode('fr');
                   localLanguage = 'fr';
                   context.setLocale(const Locale('fr'));
-                  // ApiManager.updateUser(lang: "fr");
                   navigator(
                     context: context,
                     remove: true,
@@ -107,8 +105,8 @@ class LanguagesDialog {
                       Text(
                         'French'.tr(),
                         style: const TextStyle(
-                          color: kSecondaryColor,
-                          fontSize: 17,
+                          color: kPrimaryColor,
+                          fontSize: 14,
                         ),
                       ),
                     ],

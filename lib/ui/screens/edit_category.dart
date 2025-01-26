@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/config/navigator.dart';
-
 import 'package:tepmare_warehouse_man_app/ui/components/custom_text_field.dart';
 import 'package:tepmare_warehouse_man_app/ui/components/secondary_app_bar.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/categories.dart';
@@ -25,14 +23,13 @@ class EditCategory extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SecondaryAppBar("Edit Category".tr()),
-              (screenHeight / 3).h,
               CustomTextField(
                 controller: categoryLabel,
                 hint: "Enter Category Label".tr(),
               ),
-              20.h,
               InkWell(
                 onTap: () {
                   Dialogs().loadingDialog(context);
@@ -52,7 +49,6 @@ class EditCategory extends StatelessWidget {
                   });
                 },
                 child: Container(
-                  width: screenWidth / 1.3,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.only(
                     top: 12,

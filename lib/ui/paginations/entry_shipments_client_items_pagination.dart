@@ -1,14 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tepmare_warehouse_man_app/config/margin.dart';
+import 'package:tepmare_warehouse_man_app/logic/functions/helper_functions.dart';
 import 'package:tepmare_warehouse_man_app/models/items_model.dart';
-import 'package:tepmare_warehouse_man_app/models/sites_model.dart';
-import 'package:tepmare_warehouse_man_app/ui/components/site_item.dart';
-
 
 import '../../../config/constants.dart';
 import '../../../logic/services/api_manager.dart';
-import '../../logic/uiLogic/create_item_logic.dart';
 import '../../logic/uiLogic/entry_shipment_logic.dart';
 
 /// Two variables in this class, first one is the function that returns list of data from api, second one is the custom widget that ListView.builder will return.
@@ -121,30 +119,40 @@ class EntryShipmentClientItemsPagination extends ConsumerWidget {
             /// (2) change custom component for list view
             InkWell(
               onTap: () {
-                enterQty(context).then((value) {
-                  EntryShipmentLogic.children.add({
-                    "itemId":
-                    fetchedData[index].id,
-                    "qty": value,
-                    "designation": fetchedData[index].designation,
+                          enterQty(context,
+                                  itemName: fetchedData[index].designation)
+                              .then((value) {
+                            EntryShipmentLogic.children.add({
+                              "itemId": fetchedData[index].id,
+                              "qty": value,
+                              "designation": fetchedData[index].designation,
                   });
                 });
               },
               child: Container(
                 height: 45,
-                margin: EdgeInsets.all(5),
-                width: screenWidth ,
-                padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.all(5),
+                          width: screenWidth,
+                          padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.grey.withOpacity(0.2),
                   borderRadius:
                   BorderRadius.circular(10),
                 ),
-                child: Text(fetchedData[index]
-                    .designation ??
-                    ""),
-              ),
-            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(fetchedData[index].designation ?? ""),
+                              Text(
+                                "Stock: ${fetchedData[index].stock ?? ""}",
+                                style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
             index == fetchedData.length - 1 && bottomLoading
                 ? Center(
               child: Container(
@@ -167,48 +175,93 @@ class EntryShipmentClientItemsPagination extends ConsumerWidget {
   }
 }
 
-Future<num> enterQty(BuildContext context) async {
+Future<num> enterQty(BuildContext context, {String? itemName}) async {
   TextEditingController controller = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
   await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Row(
-            children: [
-              Container(
-                width: screenWidth / 3,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: kSecondaryColor.withOpacity(0.2), width: 1),
+          backgroundColor: Colors.white,
+          title: Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Enter QTY From".tr(),
+                      style: const TextStyle(
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14),
+                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.red,
+                        ))
+                  ],
                 ),
-                child: TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
+                Text(
+                  itemName ?? "",
+                  style: const TextStyle(
+                      color: kSecondaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14),
+                ),
+                10.h,
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: kSecondaryColor.withOpacity(0.2), width: 1),
+                  ),
+                  child: TextFormField(
+                    controller: controller,
+                    validator: HelperFunctions.validateQuantity,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Enter Quantity".tr(),
+                      hintStyle: const TextStyle(fontSize: 12),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Icon(
-                    Icons.done,
-                    color: kGreenColor,
-                    size: 20,
+                10.h,
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(15.0),
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(5)),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Add to List".tr(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       });

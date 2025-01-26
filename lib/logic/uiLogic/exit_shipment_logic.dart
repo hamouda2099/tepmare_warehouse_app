@@ -1,11 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/shipments.dart';
-
 
 import '../../config/navigator.dart';
 import '../../dialogs/basic_dialogs.dart';
 import '../../models/clients_model.dart';
+import '../../ui/paginations/exit_shipments_client_items_pagination.dart';
 import '../services/api_manager.dart';
 
 class ExitShipmentLogic {
@@ -16,10 +19,40 @@ class ExitShipmentLogic {
   final clientNameProvider = StateProvider<String?>((ref) => null);
   final formKey = GlobalKey<FormState>();
   static List<Map> children = [];
+  PageController controller = PageController();
+  TextEditingController searchCnt = TextEditingController();
+  final refreshReBuilder = StateProvider<String?>((ref) => null);
 
   TextEditingController destinationAddressCnt = TextEditingController();
   TextEditingController approClientCnt = TextEditingController();
   TextEditingController descriptionCnt = TextEditingController();
+
+  Future scanItem() async {
+    String barcodeScanRes;
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
+      ApiManager.getStockByBarcode(barcode: barcodeScanRes).then((item) {
+        if (item['statusCode'] == 200) {
+          enterQty(context,
+                  qty: item['item']['qty'].toString(),
+                  itemName: item['item']['designation'])
+              .then((value) {
+            ExitShipmentLogic.children.add({
+              "itemId": item['item']['item_id'],
+              "qty": value,
+              "designation": item['item']['designation'],
+              "locationId": item['item']['locationId']
+            });
+          });
+        } else {
+          Dialogs().messageDialog(context, "Item Not Found".tr());
+        }
+      });
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+  }
 
   void create() {
     if (children.isEmpty) {
@@ -41,8 +74,7 @@ class ExitShipmentLogic {
         .then((value) {
       Navigator.pop(context);
       if (value['statusCode'] == 200) {
-        navigator(
-            context: context, screen: Shipments(), replacement: true);
+        navigator(context: context, screen: Shipments(), replacement: true);
       } else {
         Dialogs().messageDialog(context, value['message']);
       }

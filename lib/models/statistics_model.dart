@@ -24,6 +24,7 @@ class StatisticsModel {
   int? locations;
   int? items;
   int? categories;
+  int? stock;
 
   StatisticsModel({
     this.statusCode,
@@ -39,6 +40,7 @@ class StatisticsModel {
     this.locations,
     this.categories,
     this.items,
+    this.stock,
   });
 
   factory StatisticsModel.fromJson(Map<String, dynamic> json) =>
@@ -56,6 +58,7 @@ class StatisticsModel {
         locations: json["locations"],
         items: json["items"],
         categories: json["categories"],
+        stock: json["stock"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -68,5 +71,6 @@ class StatisticsModel {
         "canceledShipments": canceledShipments,
         "completedShipments": completedShipments,
         "receivedShipments": receivedShipments,
+        "stock": stock,
       };
 }

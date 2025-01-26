@@ -8,6 +8,7 @@ import 'package:tepmare_warehouse_man_app/ui/components/secondary_app_bar.dart';
 import 'package:tepmare_warehouse_man_app/ui/paginations/shipments_pagination.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/entry_shipment.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/exit_shipment.dart';
+import 'package:tepmare_warehouse_man_app/ui/screens/home.dart';
 
 import '../components/search_text_field.dart';
 
@@ -16,7 +17,7 @@ class Shipments extends ConsumerWidget {
   final refreshProvider = StateProvider<String?>((ref) => null);
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       body: SafeArea(
@@ -24,14 +25,26 @@ class Shipments extends ConsumerWidget {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
-              SecondaryAppBar("Shipments".tr()),
+              SecondaryAppBar(
+                "Shipments".tr(),
+                onTapIcon: () {
+                  navigator(
+                    context: context,
+                    screen: const Home(),
+                    replacement: true,
+                  );
+                },
+              ),
               20.h,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                    onTap: (){
-                      navigator(context: context, screen: EntryShipment());
+                    onTap: () {
+                      navigator(
+                        context: context,
+                        screen: EntryShipment(),
+                      );
                     },
                     child: Container(
                       width: screenWidth / 2.5,
@@ -44,7 +57,7 @@ class Shipments extends ConsumerWidget {
                         color: kSecondaryColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child:  Text(
+                      child: Text(
                         'Entry'.tr(),
                         style: const TextStyle(
                           color: Colors.white,
@@ -54,9 +67,11 @@ class Shipments extends ConsumerWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: (){
-                      navigator(context: context, screen: ExitShipment());
-
+                    onTap: () {
+                      navigator(
+                        context: context,
+                        screen: ExitShipment(),
+                      );
                     },
                     child: Container(
                       width: screenWidth / 2.5,
@@ -69,7 +84,7 @@ class Shipments extends ConsumerWidget {
                         color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child:  Text(
+                      child: Text(
                         'Exit'.tr(),
                         style: const TextStyle(
                           color: Colors.white,
@@ -84,11 +99,10 @@ class Shipments extends ConsumerWidget {
               Container(
                 decoration: BoxDecoration(
                     color: kGreyColor.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(15)
-                ),
+                    borderRadius: BorderRadius.circular(15)),
                 child: SearchTextField(
                   controller: searchCnt,
-                  onChanged: (val){
+                  onChanged: (val) {
                     ref.read(refreshProvider.notifier).state =
                         DateTime.now().toString();
                   },
@@ -99,7 +113,11 @@ class Shipments extends ConsumerWidget {
                 builder: (context, ref, child) {
                   ref.watch(refreshProvider);
 
-                  return Expanded(child: ShipmentsPagination(query: searchCnt.text,));
+                  return Expanded(
+                    child: ShipmentsPagination(
+                      query: searchCnt.text,
+                    ),
+                  );
                 },
               )
             ],

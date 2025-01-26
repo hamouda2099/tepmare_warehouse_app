@@ -7,6 +7,7 @@ import 'package:tepmare_warehouse_man_app/config/navigator.dart';
 import 'package:tepmare_warehouse_man_app/ui/paginations/sites_pagination.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/create_site.dart';
 
+import '../components/bottom_bar.dart';
 import '../components/search_text_field.dart';
 import '../components/secondary_app_bar.dart';
 
@@ -18,6 +19,7 @@ class Sites extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
+      bottomNavigationBar: BottomBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -26,14 +28,18 @@ class Sites extends ConsumerWidget {
               SecondaryAppBar(
                 "Sites".tr(),
                 onTapIcon: () {
-                  navigator(context: context, screen: CreateSite());
+                  navigator(
+                    context: context,
+                    screen: CreateSite(),
+                  );
                 },
               ),
               20.h,
               Container(
                 decoration: BoxDecoration(
-                    color: kGreyColor.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(15)),
+                  color: kGreyColor.withOpacity(.1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 child: SearchTextField(
                   controller: searchCnt,
                   onChanged: (val) {
@@ -47,9 +53,10 @@ class Sites extends ConsumerWidget {
                 builder: (context, ref, child) {
                   ref.watch(refreshProvider);
                   return Expanded(
-                      child: SitesPagination(
-                    query: searchCnt.text,
-                  ));
+                    child: SitesPagination(
+                      query: searchCnt.text,
+                    ),
+                  );
                 },
               )
             ],

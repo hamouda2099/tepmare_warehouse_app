@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 import '../config/constants.dart';
 
 class UpdateAppDialog {
@@ -197,7 +196,11 @@ class UpdateAppDialog {
                     child: Container(
                       alignment: Alignment.center,
                       padding: const EdgeInsets.only(
-                          top: 5, bottom: 5, left: 20, right: 20),
+                        top: 5,
+                        bottom: 5,
+                        left: 20,
+                        right: 20,
+                      ),
                       decoration: BoxDecoration(
                         color: kPrimaryColor,
                         borderRadius: BorderRadius.circular(5),

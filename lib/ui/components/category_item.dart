@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/config/navigator.dart';
-import 'package:tepmare_warehouse_man_app/models/sites_model.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/edit_category.dart';
-import 'package:tepmare_warehouse_man_app/ui/screens/edit_site.dart';
 
 import '../../models/categories_model.dart';
 
@@ -15,12 +13,17 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.only(
+        top: 10.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(
+              left: 10,
+              right: 10,
+            ),
             child: Row(
               children: [
                 Text(
@@ -34,13 +37,16 @@ class CategoryItem extends StatelessWidget {
                 const Spacer(),
                 InkWell(
                     onTap: () {
-                      navigator(context: context, screen: EditCategory(category));
-                    },
+                    navigator(
+                      context: context,
+                      screen: EditCategory(category),
+                    );
+                  },
                     child: Image.asset(
                       "assets/images/pen-circle.png",
                       width: 25,
-                    )),
-
+                  ),
+                ),
               ],
             ),
           ),

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/items.dart';
 
-
 import '../../config/navigator.dart';
 import '../../dialogs/basic_dialogs.dart';
 import '../../models/categories_model.dart';
@@ -12,9 +11,8 @@ import '../services/api_manager.dart';
 class CreateItemLogic {
   late BuildContext context;
   late WidgetRef ref;
-  final formKey = GlobalKey<FormState>();
+  final itemDetailsFormKey = GlobalKey<FormState>();
   static List<Map> children = [];
-
   TextEditingController designationCnt = TextEditingController();
   TextEditingController skuCnt = TextEditingController();
   TextEditingController barcodeCnt = TextEditingController();
@@ -32,7 +30,6 @@ class CreateItemLogic {
   List types = ['simple', 'composite'];
 
   void create() {
-    if ((formKey.currentState?.validate() ?? false)) {
       Dialogs().loadingDialog(context);
       ApiManager.createItem(
               designation: designationCnt.text,
@@ -57,6 +54,5 @@ class CreateItemLogic {
           Dialogs().messageDialog(context, value['message']);
         }
       });
-    }
   }
 }

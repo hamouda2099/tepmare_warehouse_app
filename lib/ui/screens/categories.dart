@@ -4,10 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/config/navigator.dart';
-import 'package:tepmare_warehouse_man_app/ui/paginations/sites_pagination.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/create_category.dart';
-import 'package:tepmare_warehouse_man_app/ui/screens/create_site.dart';
 
+import '../components/bottom_bar.dart';
 import '../components/search_text_field.dart';
 import '../components/secondary_app_bar.dart';
 import '../paginations/categories_pagination.dart';
@@ -20,6 +19,7 @@ class Categories extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
+      bottomNavigationBar: BottomBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -46,7 +46,6 @@ class Categories extends ConsumerWidget {
               Consumer(
                 builder: (context, ref, child) {
                   ref.watch(refreshProvider);
-
                   return Expanded(child: CategoriesPagination(query: searchCnt.text,));
                 },
               )

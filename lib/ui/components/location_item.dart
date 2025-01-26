@@ -3,8 +3,6 @@ import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
 import 'package:tepmare_warehouse_man_app/config/navigator.dart';
 import 'package:tepmare_warehouse_man_app/models/locations_model.dart';
-import 'package:tepmare_warehouse_man_app/models/sites_model.dart';
-import 'package:tepmare_warehouse_man_app/ui/screens/edit_site.dart';
 import 'package:tepmare_warehouse_man_app/ui/screens/locations.dart';
 
 import '../../dialogs/basic_dialogs.dart';
@@ -22,7 +20,10 @@ class LocationItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(
+              left: 10,
+              right: 10,
+            ),
             child: Row(
               children: [
                 Column(
@@ -54,8 +55,10 @@ class LocationItem extends StatelessWidget {
                         if (value['statusCode'] == 200) {
                           navigator(
                               context: context,
-                              replacement: true, screen: Locations());
-                        } else {
+                          replacement: true,
+                          screen: Locations(),
+                        );
+                      } else {
                           Dialogs().messageDialog(context, value['message'] ?? "");
                         }
                       });
@@ -63,7 +66,8 @@ class LocationItem extends StatelessWidget {
                     child: Image.asset(
                       "assets/images/trash.png",
                       width: 25,
-                    )),
+                  ),
+                ),
               ],
             ),
           ),

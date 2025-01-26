@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tepmare_warehouse_man_app/config/constants.dart';
 import 'package:tepmare_warehouse_man_app/config/margin.dart';
@@ -24,7 +23,10 @@ class SecondaryAppBar extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-              color: kGreyColor, fontSize: 18, fontWeight: FontWeight.w900),
+            color: kGreyColor,
+            fontSize: 18,
+            fontWeight: FontWeight.w900,
+          ),
         ),
         const Spacer(),
         onTapIcon == null
